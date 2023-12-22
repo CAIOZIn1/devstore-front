@@ -4,7 +4,11 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 async function getFeaturedProducts(): Promise<Product[]> {
-  const response = await api('/products/featured')
+  const response = await api('/products/featured', {
+    next: {
+      revalidate: 15, // armazena o valor da api em cache por 15s
+    },
+  })
 
   const products = await response.json()
 
@@ -15,13 +19,14 @@ export default async function Home() {
   const [highlightedProduct, ...otherProducts] = await getFeaturedProducts()
 
   return (
-    <div className="grid max-h-[860px] grid-cols-9 grid-rows-6 gap-6">
+    <div className="grid max-h-[860px] grid-cols-9 grid-rows-6 gap-6 ">
+      <div className="bg-[#adadff] absolute top-[-1rem] -z-10 left-[-35rem] h-[31.25rem] w-[50rem] rounded-full blur-[10rem] sm:w-[68.75rem] md:left-[-33rem] lg:left-[-28rem] xl:left-[-15rem] 2xl:left-[-5rem] dark:bg-[#e22626]"></div>
       <Link
         href={`/product/${highlightedProduct.slug}`}
-        className="group relative col-span-6 row-span-6 rounded-lg bg-zinc-900 overflow-hidden"
+        className="group relative col-span-6 row-span-6 rounded-lg overflow-hidden bg-transparent/80"
       >
         <Image
-          className="group-hover:scale-105 transition-transform duration-500"
+          className="group-hover:scale-105 transition-transform duration-500 "
           width={920}
           height={920}
           quality={100}
@@ -49,7 +54,7 @@ export default async function Home() {
           <Link
             key={product.id}
             href={`/product/${product.slug}`}
-            className="group relative col-span-3 row-span-3 rounded-lg bg-zinc-900 overflow-hidden"
+            className="group relative col-span-3 row-span-3 rounded-lg bg-zinc-900 overflow-hidden bg-transparent/60"
           >
             <Image
               className="group-hover:scale-105 transition-transform duration-500"
