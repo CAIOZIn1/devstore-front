@@ -1,18 +1,36 @@
 import { z } from 'zod'
 
-const envSchema = z.object({
-  NEXT_PUBLIC_API_BASE_URL: z.string().url(),
-})
+let parsedEnv
 
-const parsedEnv = envSchema.safeParse(process.env)
+try {
+  const envSchemaLocal = z.object({
+    NEXT_PUBLIC_API_BASE_URL: z.string().url(),
+  })
 
-if (!parsedEnv.success) {
-  console.error(
-    'Invalid envirements variable',
-    parsedEnv.error.flatten().formErrors,
-  )
+  parsedEnv = envSchemaLocal.safeParse(process.env)
 
-  throw new Error('Invalid envirements variables.')
+  if (!parsedEnv.success) {
+    console.error(
+      'Invalid envirements variable',
+      parsedEnv.error.flatten().formErrors,
+    )
+
+    throw new Error('Invalid envirements variables.')
+  }
+} catch (err) {
+  const envSchemaLocal = z.object({
+    NEXT_PUBLIC_API_BASE_URL: z.string().url(),
+  })
+
+  parsedEnv = envSchemaLocal.safeParse(process.env)
+
+  if (!parsedEnv.success) {
+    console.error(
+      'Invalid envirements variable',
+      parsedEnv.error.flatten().formErrors,
+    )
+
+    throw new Error('Invalid envirements variables.')
+  }
 }
-
 export const env = parsedEnv.data
