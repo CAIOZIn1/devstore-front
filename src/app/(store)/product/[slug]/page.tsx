@@ -1,3 +1,4 @@
+import { AddToCartButton } from '@/components/addToCartButton'
 import { api } from '@/data/api'
 import { Product } from '@/data/types/products'
 import { Metadata } from 'next'
@@ -29,6 +30,17 @@ export async function generateMetadata({
   return {
     title: product.title,
   }
+}
+
+export async function generateStaticParams() {
+  const response = await api('/products/featured')
+  const products: Product[] = await response.json()
+
+  return products.map((product) => {
+    return {
+      slug: product.slug,
+    }
+  })
 }
 
 export default async function ProductPage({ params }: ProductProps) {
@@ -65,6 +77,7 @@ export default async function ProductPage({ params }: ProductProps) {
             })}
           </span>
           <span className="text-sm text-zinc-400">
+            Em até 12x de{' '}
             {(product.price / 12).toLocaleString('pt-BR', {
               style: 'currency',
               currency: 'BRL',
@@ -96,13 +109,7 @@ export default async function ProductPage({ params }: ProductProps) {
             </button>
           </div>
         </div>
-
-        <button
-          type="button"
-          className="mt-8 flex h-12 items-center justify-center rounded-full bg-emerald-600 hover:bg-emerald-800 font-semibold text-white transition-all duration-300 ease-out scale-105"
-        >
-          Adicionar ao carrinho
-        </button>
+        <AddToCartButton productId={product.id} />
       </div>
     </div>
   )

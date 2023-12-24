@@ -5,8 +5,6 @@ export async function GET(
   _request: Request,
   { params }: { params: { slug: string } },
 ) {
-  await new Promise((resolve) => setTimeout(resolve, 500))
-
   const slug = z.string().parse(params.slug)
 
   const product = data.products.find((product) => product.slug === slug)
